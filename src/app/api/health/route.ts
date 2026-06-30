@@ -8,6 +8,8 @@ export async function GET() {
     env_DATABASE_URL: !!process.env["DATABASE_URL"],
     env_POSTGRES_PRISMA_URL: !!process.env["POSTGRES_PRISMA_URL"],
     env_POSTGRES_URL: !!process.env["POSTGRES_URL"],
+    env_AUTH_SECRET: !!process.env["AUTH_SECRET"],
+    env_AUTH_SECRET_len: process.env["AUTH_SECRET"]?.length ?? 0,
     node_env: process.env.NODE_ENV,
   };
 
