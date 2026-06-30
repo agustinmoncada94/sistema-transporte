@@ -9,10 +9,6 @@ const directUrl =
   process.env["POSTGRES_URL"] ??
   "postgres://postgres:postgres@localhost:51214/template1?sslmode=disable&connection_limit=10&connect_timeout=0&max_idle_connection_lifetime=0&pool_timeout=0&socket_timeout=0";
 
-const shadowUrl =
-  process.env["SHADOW_DATABASE_URL"] ??
-  "postgres://postgres:postgres@localhost:51215/template1?sslmode=disable&connection_limit=10&connect_timeout=0&max_idle_connection_lifetime=0&pool_timeout=0&socket_timeout=0";
-
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
@@ -21,6 +17,5 @@ export default defineConfig({
   },
   datasource: {
     url: directUrl,
-    shadowDatabaseUrl: shadowUrl,
   },
 });
