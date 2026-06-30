@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EstadoEnvio {
+  INGRESADO
+  EN_TRANSITO
+  ENTREGADO
+  CANCELADO
+}
+
+enum TipoMercaderia {
+  REPUESTOS
+  MUESTRAS_MEDICAS
+  CALZADO
+  CADENA_FRIO
+  GENERAL
+  OTRO
+}
+
+model Cliente {
+  id             Int      @id @default(autoincrement())
+  razonSocial    String   @map("razon_social")
+  cuit           String   @unique
+  contactoNombre String?  @map("contacto_nombre")
+  telefono       String?
+  email          String?
+  direccion      String?
+  localidad      String?
+  provincia      String?
+  notas          String?
+  activo         Int      @default(1)
+  creadoEn       DateTime @default(now()) @map("creado_en")
+  envios         Envio[]
+
+  @@map("clientes")
+}
+
+model Ruta {
+  id         Int     @id @default(autoincrement())
+  origen     String
+  destino    String
+  km         Int
+  precioBase Float   @map("precio_base")
+  activa     Int     @default(1)
+  envios     Envio[]
+
+  @@map("rutas")
+}
+
+model Envio {
+  id                    Int              @id @default(autoincrement())
+  numero                String           @unique
+  etiqueta              String
+  clienteId             Int?             @map("cliente_id")
+  cliente               Cliente?         @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  destinatarioNombre    String           @map("destinatario_nombre")
+  destinatarioDireccion String?          @map("destinatario_direccion")
+  destinatarioTelefono  String?          @map("destinatario_telefono")
+  rutaId                Int?             @map("ruta_id")
+  ruta                  Ruta?            @relation(fields: [rutaId], references: [id], onDelete: SetNull)
+  origen                String
+  destino               String
+  tipoMercaderia        TipoMercaderia   @default(GENERAL) @map("tipo_mercaderia")
+  pesoKg                Float?           @map("peso_kg")
+  bultos                Int              @default(1)
+  precioCliente         Float?           @map("precio_cliente")
+  costoEstimado         Float?           @map("costo_estimado")
+  kmRuta                Int?             @map("km_ruta")
+  estado                EstadoEnvio      @default(INGRESADO)
+  observaciones         String?
+  fechaIngreso          DateTime         @default(now()) @map("fecha_ingreso")
+  fechaEntrega          DateTime?        @map("fecha_entrega")
+  creadoEn              DateTime         @default(now()) @map("creado_en")
+  actualizadoEn         DateTime         @updatedAt @map("actualizado_en")
+  historial             HistorialEstado[]
+
+  @@map("envios")
+}
+
+model HistorialEstado {
+  id             Int      @id @default(autoincrement())
+  envioId        Int?     @map("envio_id")
+  envio          Envio?   @relation(fields: [envioId], references: [id], onDelete: Cascade)
+  estadoAnterior String?  @map("estado_anterior")
+  estadoNuevo    String   @map("estado_nuevo")
+  nota           String?
+  creadoEn       DateTime @default(now()) @map("creado_en")
+
+  @@map("historial_estados")
+}
+
+model Usuario {
+  id       Int      @id @default(autoincrement())
+  nombre   String
+  email    String   @unique
+  password String
+  rol      String   @default("operador")
+  activo   Int      @default(1)
+  creadoEn DateTime @default(now()) @map("creado_en")
+
+  @@map("usuarios")
+}
