@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { formatPeso, formatFecha, ESTADOS_LABELS, ESTADOS_COLORS } from "@/lib/utils";
 import Link from "next/link";
 import { Package } from "lucide-react";
+import CambiarEstadoModal from "./cambiar-estado-modal";
 
 export const dynamic = "force-dynamic";
 
@@ -132,9 +133,11 @@ export default async function EnviosPage({
                     <td className="px-4 py-3 text-right text-gray-700">{e.precioCliente ? formatPeso(Number(e.precioCliente)) : "-"}</td>
                     <td className="px-4 py-3 text-gray-500 text-xs">{formatFecha(e.fechaIngreso)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-block text-xs px-2 py-0.5 rounded-full font-medium ${ESTADOS_COLORS[e.estado ?? "ingresado"]}`}>
-                        {ESTADOS_LABELS[e.estado ?? "ingresado"]}
-                      </span>
+                      <CambiarEstadoModal
+                        envioId={e.id}
+                        envioNumero={e.numero}
+                        estadoActual={e.estado ?? "ingresado"}
+                      />
                     </td>
                   </tr>
                 ))}
