@@ -4,6 +4,8 @@ import { Pool } from "pg";
 
 const connectionString =
   process.env["DATABASE_URL"] ??
+  process.env["POSTGRES_PRISMA_URL"] ??
+  process.env["POSTGRES_URL"] ??
   "postgres://postgres:postgres@localhost:51214/template1?sslmode=disable";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
