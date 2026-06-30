@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Package } from "lucide-react";
 import { formatPeso, formatFecha, ESTADOS_LABELS, ESTADOS_COLORS } from "@/lib/utils";
+import EditarCliente from "./editar-cliente";
 
 export const dynamic = "force-dynamic";
 
@@ -33,19 +34,22 @@ export default async function ClienteDetallePage({
 
   return (
     <div className="p-6 space-y-6 max-w-4xl">
-      <div className="flex items-center gap-3">
-        <Link href="/clientes" className="text-gray-400 hover:text-gray-700">
-          <ArrowLeft className="w-4 h-4" />
-        </Link>
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 font-medium text-sm flex-shrink-0">
-            {cliente.razonSocial.slice(0, 2).toUpperCase()}
-          </div>
-          <div>
-            <h1 className="text-xl font-semibold text-gray-900">{cliente.razonSocial}</h1>
-            <p className="text-sm text-gray-500">CUIT: {cliente.cuit}</p>
+          <Link href="/clientes" className="text-gray-400 hover:text-gray-700">
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 font-medium text-sm flex-shrink-0">
+              {cliente.razonSocial.slice(0, 2).toUpperCase()}
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold text-gray-900">{cliente.razonSocial}</h1>
+              <p className="text-sm text-gray-500">CUIT: {cliente.cuit}</p>
+            </div>
           </div>
         </div>
+        <EditarCliente cliente={cliente} />
       </div>
 
       {/* Datos del cliente */}
