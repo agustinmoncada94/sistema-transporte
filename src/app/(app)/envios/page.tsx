@@ -39,6 +39,7 @@ export default async function EnviosPage({
     where: whereClause,
     orderBy: { creadoEn: "desc" },
     take: 100,
+    include: { cliente: { select: { id: true, razonSocial: true } } },
   });
 
   // Adaptamos el formato a minúsculas solo para que coincida con las claves del objeto ESTADOS_COLORS de utils.ts
@@ -98,6 +99,7 @@ export default async function EnviosPage({
                 <tr className="border-b border-gray-200 bg-gray-50">
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">Número</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">Etiqueta</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">Cliente</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">Ruta</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">Destinatario</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">Tipo</th>
@@ -115,6 +117,15 @@ export default async function EnviosPage({
                       </Link>
                     </td>
                     <td className="px-4 py-3 font-mono text-xs text-gray-600">{e.etiqueta}</td>
+                    <td className="px-4 py-3 text-gray-700 max-w-40 truncate">
+                      {e.cliente ? (
+                        <Link href={`/clientes/${e.cliente.id}`} className="text-blue-600 hover:underline">
+                          {e.cliente.razonSocial}
+                        </Link>
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-gray-700">{e.origen} → {e.destino}</td>
                     <td className="px-4 py-3 text-gray-700 max-w-32 truncate">{e.destinatarioNombre}</td>
                     <td className="px-4 py-3 text-gray-500 text-xs">{e.tipoMercaderia?.toLowerCase().replace("_", " ")}</td>

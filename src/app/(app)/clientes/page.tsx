@@ -42,7 +42,7 @@ export default async function ClientesPage() {
       ) : (
         <div className="grid gap-3">
           {lista.map((c) => (
-            <div key={c.id} className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-4">
+            <Link key={c.id} href={`/clientes/${c.id}`} className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-4 hover:border-blue-300 hover:shadow-sm transition-all">
               <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 font-medium text-sm flex-shrink-0">
                 {c.razonSocial.slice(0, 2).toUpperCase()}
               </div>
@@ -54,7 +54,7 @@ export default async function ClientesPage() {
                 {c.telefono && <p>{c.telefono}</p>}
                 {c.email && <p>{c.email}</p>}
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
