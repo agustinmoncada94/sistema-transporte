@@ -5,8 +5,9 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("x-setup-key");
-  if (authHeader !== process.env["AUTH_SECRET"]) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const secret = (process.env["AUTH_SECRET"] || "").trim();
+  if (!authHeader || !secret || authHeader.trim() !== secret) {
+    return NextResponse.json({ error: "Forbidden", hint: `key_len=${authHeader?.length}, secret_len=${secret.length}` }, { status: 403 });
   }
 
   const connectionString =
