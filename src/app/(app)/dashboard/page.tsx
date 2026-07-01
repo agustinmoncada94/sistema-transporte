@@ -1,95 +1,183 @@
 import { db } from "@/lib/db";
-import { Package, Users, TrendingUp, Truck } from "lucide-react";
-import { formatPeso, formatFecha, ESTADOS_LABELS, ESTADOS_COLORS } from "@/lib/utils";
+import {
+  LayoutDashboard,
+  Package,
+  Users,
+  TrendingUp,
+  Map,
+  Truck,
+  Plus,
+  Globe,
+  BarChart3,
+  MapPin,
+  Calculator,
+  DollarSign,
+  Settings,
+} from "lucide-react";
+import { formatPeso } from "@/lib/utils";
 import Link from "next/link";
+import { auth } from "@/auth";
+import { SignOutButton } from "./sign-out-button";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  // Consultas nativas con Prisma en paralelo para mejorar rendimiento
-  const [totalEnviosCount, enTransitoCount, totalClientesCount, facturadoSum] = await Promise.all([
-    db.envio.count(),
-    db.envio.count({ where: { estado: "INGRESADO" } }),
-    db.cliente.count({ where: { activo: 1 } }),
-    db.envio.aggregate({ _sum: { precioCliente: true } }),
-  ]);
+  const session = await auth();
+  const userName = session?.user?.name ?? "Admin";
 
-  // Traemos los últimos 8 envíos ordenados por fecha de creación
-  const ultimosEnviosRaw = await db.envio.findMany({
-    orderBy: { creadoEn: "desc" },
-    take: 8,
-  });
+  const [totalEnviosCount, enTransitoCount, totalClientesCount, facturadoSum, totalContableCount, totalRutasCount] =
+    await Promise.all([
+      db.envio.count(),
+      db.envio.count({ where: { estado: "INGRESADO" } }),
+      db.cliente.count({ where: { activo: 1 } }),
+      db.envio.aggregate({ _sum: { precioCliente: true } }),
+      db.envio.count(),
+      db.ruta.count(),
+    ]);
 
-  // Adaptamos el formato a minúsculas solo para que coincida con las claves del objeto ESTADOS_COLORS de utils.ts
-  const ultimosEnvios = ultimosEnviosRaw.map(e => ({
-    ...e,
-    estado: e.estado.toLowerCase()
-  }));
+  const facturadoTotal = formatPeso(Number(facturadoSum._sum.precioCliente ?? 0));
 
-  const stats = [
-    { label: "Total envíos", value: totalEnviosCount, icon: Package, color: "bg-blue-50 text-blue-600" },
-    { label: "En tránsito", value: enTransitoCount, icon: Truck, color: "bg-amber-50 text-amber-600" },
-    { label: "Clientes activos", value: totalClientesCount, icon: Users, color: "bg-green-50 text-green-600" },
-    { label: "Facturado total", value: formatPeso(Number(facturadoSum._sum.precioCliente ?? 0)), icon: TrendingUp, color: "bg-purple-50 text-purple-600" },
+  const cards = [
+    {
+      href: "/dashboard",
+      title: "DASHBOARD",
+      gradient: "from-purple-600 to-purple-700",
+      hoverGradient: "hover:from-purple-500 hover:to-purple-600",
+      shadowColor: "shadow-purple-900/30",
+      icons: [BarChart3, TrendingUp],
+      counters: [
+        { label: "Total envíos", value: totalEnviosCount, icon: Package },
+        { label: "En tránsito", value: enTransitoCount, icon: Truck },
+      ],
+    },
+    {
+      href: "/envios",
+      title: "ENVÍOS",
+      gradient: "from-amber-400 to-orange-500",
+      hoverGradient: "hover:from-amber-300 hover:to-orange-400",
+      shadowColor: "shadow-orange-900/30",
+      icons: [Globe, Truck],
+      counters: [
+        { label: "Total envíos", value: totalEnviosCount, icon: Package },
+        { label: "En tránsito", value: enTransitoCount, icon: Truck },
+      ],
+    },
+    {
+      href: "/clientes",
+      title: "CLIENTES",
+      gradient: "from-green-500 to-emerald-600",
+      hoverGradient: "hover:from-green-400 hover:to-emerald-500",
+      shadowColor: "shadow-green-900/30",
+      icons: [Globe, Truck],
+      counters: [
+        { label: "Total clientes", value: totalClientesCount, icon: Users },
+        { label: "En tránsito", value: enTransitoCount, icon: Truck },
+      ],
+    },
+    {
+      href: "/contable",
+      title: "CONTABLE",
+      gradient: "from-sky-400 to-cyan-500",
+      hoverGradient: "hover:from-sky-300 hover:to-cyan-400",
+      shadowColor: "shadow-cyan-900/30",
+      icons: [Calculator, DollarSign],
+      counters: [
+        { label: "Contables", value: totalContableCount, icon: Calculator },
+      ],
+    },
+    {
+      href: "/rutas",
+      title: "RUTAS",
+      gradient: "from-cyan-500 to-teal-500",
+      hoverGradient: "hover:from-cyan-400 hover:to-teal-400",
+      shadowColor: "shadow-teal-900/30",
+      icons: [MapPin, Map],
+      counters: [
+        { label: "Total envíos", value: totalEnviosCount, icon: Package },
+        { label: "En tránsito", value: enTransitoCount, icon: Truck },
+      ],
+    },
   ];
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Resumen general del sistema</p>
-        </div>
-        <Link
-          href="/envios/nuevo"
-          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-        >
-          + Nuevo envío
-        </Link>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex flex-col relative overflow-hidden">
+      {/* Imagen de fondo decorativa con overlay */}
+      <div className="absolute inset-0 opacity-20 bg-[url('/bg-transport.png')] bg-cover bg-center" />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-blue-950/70 to-slate-900/80" />
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className={`w-9 h-9 rounded-lg ${color} flex items-center justify-center mb-3`}>
-              <Icon className="w-4 h-4" />
+      {/* Contenido */}
+      <div className="relative z-10 flex-1 flex flex-col">
+        {/* Encabezado */}
+        <header className="flex items-center justify-between px-8 pt-8 pb-2 max-w-6xl mx-auto w-full">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-blue-500/20 border-2 border-blue-400/50 flex items-center justify-center">
+              <Settings className="w-6 h-6 text-blue-300" />
             </div>
-            <p className="text-2xl font-semibold text-gray-900">{value}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+            <h1 className="text-3xl font-extrabold text-white tracking-tight drop-shadow-lg">
+              Transporte<br />
+              <span className="text-blue-300">Sancrica</span>
+            </h1>
           </div>
-        ))}
-      </div>
+          <Link
+            href="/envios/nuevo"
+            className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-emerald-900/30"
+          >
+            <Plus className="w-4 h-4" />
+            Nuevo envío
+          </Link>
+        </header>
 
-      <div className="bg-white rounded-xl border border-gray-200">
-        <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-gray-900">Últimos envíos</h2>
-          <Link href="/envios" className="text-xs text-blue-600 hover:underline">Ver todos</Link>
+        {/* Grilla de tarjetas */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto px-6 mt-8 pb-8 flex-1">
+          {cards.map((card) => (
+            <Link
+              key={card.href + card.title}
+              href={card.href}
+              className={`group relative bg-gradient-to-br ${card.gradient} ${card.hoverGradient} rounded-2xl shadow-lg ${card.shadowColor} hover:shadow-xl hover:scale-[1.03] transition-all duration-300 p-6 flex flex-col justify-between min-h-[200px] overflow-hidden`}
+            >
+              {/* Decoración circular de fondo */}
+              <div className="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full" />
+              <div className="absolute -right-2 -bottom-8 w-24 h-24 bg-white/5 rounded-full" />
+
+              {/* Iconos grandes centrales */}
+              <div className="relative flex items-center justify-center gap-3 mt-2">
+                {card.icons.map((Icon, i) => (
+                  <Icon key={i} className="w-12 h-12 text-white/80 drop-shadow-md" />
+                ))}
+              </div>
+
+              {/* Mini-contadores */}
+              <div className="relative flex justify-center gap-5 mt-3">
+                {card.counters.map((c) => {
+                  const CIcon = c.icon;
+                  return (
+                    <div key={c.label} className="text-center bg-white/15 backdrop-blur-sm rounded-lg px-3 py-1.5">
+                      <div className="flex items-center justify-center gap-1 text-white">
+                        <CIcon className="w-3.5 h-3.5 opacity-80" />
+                        <span className="text-lg font-bold">{c.value}</span>
+                      </div>
+                      <p className="text-[10px] text-white/70 whitespace-nowrap">{c.label}</p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Título */}
+              <h2 className="relative text-white font-extrabold text-2xl tracking-wider text-center mt-3 drop-shadow-lg">
+                {card.title}
+              </h2>
+            </Link>
+          ))}
         </div>
-        <div className="divide-y divide-gray-100">
-          {ultimosEnvios.length === 0 ? (
-            <div className="px-5 py-8 text-center text-sm text-gray-400">
-              No hay envíos registrados aún.
-              <Link href="/envios/nuevo" className="block mt-2 text-blue-600 hover:underline">
-                Registrar el primero
-              </Link>
-            </div>
-          ) : (
-            ultimosEnvios.map((e) => (
-              <Link key={e.id} href={`/envios/${e.id}`} className="flex items-center gap-4 px-5 py-3 hover:bg-gray-50 transition-colors">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">{e.numero}</p>
-                  <p className="text-xs text-gray-500 truncate">{e.origen} → {e.destino} · {e.destinatarioNombre}</p>
-                </div>
-                <div className="text-right">
-                  <span className={`inline-block text-xs px-2 py-0.5 rounded-full font-medium ${ESTADOS_COLORS[e.estado ?? "ingresado"]}`}>
-                    {ESTADOS_LABELS[e.estado ?? "ingresado"]}
-                  </span>
-                  <p className="text-xs text-gray-400 mt-0.5">{formatFecha(e.fechaIngreso)}</p>
-                </div>
-              </Link>
-            ))
-          )}
-        </div>
+
+        {/* Footer */}
+        <footer className="relative z-10 flex items-center justify-center gap-6 py-5 border-t border-white/10">
+          <div className="flex items-center gap-2 text-white/80 text-sm">
+            <Users className="w-4 h-4" />
+            Hola, {userName}
+          </div>
+          <SignOutButton />
+        </footer>
       </div>
     </div>
   );
