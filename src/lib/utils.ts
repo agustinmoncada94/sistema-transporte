@@ -33,17 +33,24 @@ export function generarNumeroEnvio() {
 }
 
 export const ESTADOS_LABELS: Record<string, string> = {
-  ingresado: "Ingresado",
+  ingresado: "Pendiente",
   en_transito: "En tránsito",
   entregado: "Entregado",
   cancelado: "Cancelado",
 };
 
 export const ESTADOS_COLORS: Record<string, string> = {
-  ingresado: "bg-amber-100 text-amber-800",
-  en_transito: "bg-blue-100 text-blue-800",
-  entregado: "bg-green-100 text-green-800",
-  cancelado: "bg-red-100 text-red-800",
+  ingresado: "bg-slate-600/40 text-slate-300 border border-slate-500/50",
+  en_transito: "bg-orange-500/20 text-orange-400 border border-orange-500/30",
+  entregado: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+  cancelado: "bg-red-500/20 text-red-400 border border-red-500/30",
+};
+
+export const ESTADOS_ICONS: Record<string, string> = {
+  ingresado: "",
+  en_transito: "\uD83D\uDE9A",
+  entregado: "\u2713",
+  cancelado: "\u2715",
 };
 
 export const TIPO_MERCADERIA_LABELS: Record<string, string> = {

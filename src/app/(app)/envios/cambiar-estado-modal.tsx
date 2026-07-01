@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ESTADOS_LABELS, ESTADOS_COLORS } from "@/lib/utils";
+import { ESTADOS_LABELS, ESTADOS_COLORS, ESTADOS_ICONS } from "@/lib/utils";
 
 const TRANSICIONES: Record<string, string[]> = {
   ingresado: ["en_transito", "cancelado"],
@@ -61,26 +61,28 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
   }
 
   const puedeTransicionar = siguientes.length > 0;
+  const icon = ESTADOS_ICONS[estadoActual] ?? "";
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative inline-flex justify-end" ref={ref}>
       <button
         onClick={(e) => {
           e.stopPropagation();
           if (puedeTransicionar) setAbierto(!abierto);
         }}
-        className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${ESTADOS_COLORS[estadoActual ?? "ingresado"]} ${puedeTransicionar ? "cursor-pointer hover:ring-2 hover:ring-orange-400 transition-all" : "cursor-default"}`}
+        className={`inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full font-medium ${ESTADOS_COLORS[estadoActual ?? "ingresado"]} ${puedeTransicionar ? "cursor-pointer hover:brightness-125 transition-all" : "cursor-default"}`}
       >
+        {icon && <span className="text-[10px]">{icon}</span>}
         {ESTADOS_LABELS[estadoActual ?? "ingresado"]}
         {puedeTransicionar && (
-          <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3 h-3 opacity-40 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         )}
       </button>
 
       {abierto && (
-        <div className="absolute right-0 top-full mt-2 z-50 w-72 bg-slate-800 rounded-xl border border-slate-700 shadow-lg shadow-black/30 p-4 space-y-3">
+        <div className="absolute right-0 top-full mt-2 z-50 w-72 bg-slate-800 rounded-xl border border-slate-700 shadow-xl shadow-black/40 p-4 space-y-3">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Cambiar estado</p>
             <p className="text-xs text-slate-500 font-mono">{envioNumero}</p>
@@ -102,13 +104,13 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
                 disabled={loading}
                 className={`flex-1 px-3 py-2 text-xs rounded-lg font-medium transition-colors disabled:opacity-50 ${
                   s === "cancelado"
-                    ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                    ? "bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30"
                     : s === "entregado"
-                    ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                    : "bg-orange-500 text-white hover:bg-orange-600"
+                    ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30"
+                    : "bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 border border-orange-500/30"
                 }`}
               >
-                {loading ? "..." : ESTADOS_LABELS[s]}
+                {loading ? "..." : `${ESTADOS_ICONS[s] ?? ""} ${ESTADOS_LABELS[s]}`}
               </button>
             ))}
           </div>
