@@ -32,13 +32,13 @@ export default function CambiarEstado({ envioId, estadoActual }: { envioId: numb
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
-      <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Cambiar estado</h2>
+    <div className="bg-slate-800 rounded-xl border border-slate-700 p-4 space-y-3">
+      <h2 className="text-xs font-medium text-slate-400 uppercase tracking-wide">Cambiar estado</h2>
       <input
         value={nota}
         onChange={(e) => setNota(e.target.value)}
         placeholder="Nota opcional (ej: entregado en portería)"
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
       <div className="flex gap-2">
         {siguientes.map((s) => (
@@ -48,10 +48,10 @@ export default function CambiarEstado({ envioId, estadoActual }: { envioId: numb
             disabled={loading}
             className={`px-4 py-2 text-sm rounded-lg font-medium transition-colors disabled:opacity-50 ${
               s === "cancelado"
-                ? "bg-red-50 text-red-700 hover:bg-red-100"
+                ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
                 : s === "entregado"
-                ? "bg-green-600 text-white hover:bg-green-700"
-                : "bg-blue-600 text-white hover:bg-blue-700"
+                ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                : "bg-orange-500 text-white hover:bg-orange-600"
             }`}
           >
             {loading ? "..." : `Marcar como ${ESTADOS_LABELS[s]}`}

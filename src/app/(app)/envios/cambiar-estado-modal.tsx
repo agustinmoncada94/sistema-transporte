@@ -26,7 +26,6 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
 
   const siguientes = TRANSICIONES[estadoActual] ?? [];
 
-  // Cerrar al hacer clic afuera
   useEffect(() => {
     if (!abierto) return;
     function handleClick(e: MouseEvent) {
@@ -39,7 +38,6 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
     return () => document.removeEventListener("mousedown", handleClick);
   }, [abierto]);
 
-  // Cerrar con Escape
   useEffect(() => {
     if (!abierto) return;
     function handleKey(e: KeyboardEvent) {
@@ -71,7 +69,7 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
           e.stopPropagation();
           if (puedeTransicionar) setAbierto(!abierto);
         }}
-        className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${ESTADOS_COLORS[estadoActual ?? "ingresado"]} ${puedeTransicionar ? "cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all" : "cursor-default"}`}
+        className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${ESTADOS_COLORS[estadoActual ?? "ingresado"]} ${puedeTransicionar ? "cursor-pointer hover:ring-2 hover:ring-orange-400 transition-all" : "cursor-default"}`}
       >
         {ESTADOS_LABELS[estadoActual ?? "ingresado"]}
         {puedeTransicionar && (
@@ -82,10 +80,10 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
       </button>
 
       {abierto && (
-        <div className="absolute right-0 top-full mt-2 z-50 w-72 bg-white rounded-xl border border-gray-200 shadow-lg p-4 space-y-3">
+        <div className="absolute right-0 top-full mt-2 z-50 w-72 bg-slate-800 rounded-xl border border-slate-700 shadow-lg shadow-black/30 p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Cambiar estado</p>
-            <p className="text-xs text-gray-400 font-mono">{envioNumero}</p>
+            <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Cambiar estado</p>
+            <p className="text-xs text-slate-500 font-mono">{envioNumero}</p>
           </div>
 
           <input
@@ -93,7 +91,7 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
             onChange={(e) => setNota(e.target.value)}
             onClick={(e) => e.stopPropagation()}
             placeholder="Nota opcional (ej: entregado en portería)"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
 
           <div className="flex gap-2">
@@ -104,10 +102,10 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
                 disabled={loading}
                 className={`flex-1 px-3 py-2 text-xs rounded-lg font-medium transition-colors disabled:opacity-50 ${
                   s === "cancelado"
-                    ? "bg-red-50 text-red-700 hover:bg-red-100"
+                    ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
                     : s === "entregado"
-                    ? "bg-green-600 text-white hover:bg-green-700"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
+                    ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                    : "bg-orange-500 text-white hover:bg-orange-600"
                 }`}
               >
                 {loading ? "..." : ESTADOS_LABELS[s]}

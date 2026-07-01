@@ -1,10 +1,11 @@
 import { db } from "@/lib/db";
 import NuevoEnvioForm from "./form";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function NuevoEnvioPage() {
-  // Consultas con Prisma ordenadas por razón social y origen respectivamente
   const listaClientes = await db.cliente.findMany({
     where: { activo: 1 },
     orderBy: { razonSocial: "asc" },
@@ -16,10 +17,15 @@ export default async function NuevoEnvioPage() {
   });
 
   return (
-    <div className="p-6 max-w-2xl">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-gray-900">Nuevo envío</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Registrá el ingreso de un nuevo paquete al sistema</p>
+    <div className="min-h-screen bg-slate-900 p-6 max-w-2xl">
+      <div className="flex items-center gap-3 mb-6">
+        <Link href="/envios" className="text-slate-400 hover:text-white transition-colors">
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+        <div>
+          <h1 className="text-xl font-semibold text-white">Nuevo envío</h1>
+          <p className="text-sm text-slate-400 mt-0.5">Registrá el ingreso de un nuevo paquete al sistema</p>
+        </div>
       </div>
       <NuevoEnvioForm clientes={listaClientes} rutas={listaRutas} />
     </div>
