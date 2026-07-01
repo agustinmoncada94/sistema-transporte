@@ -33,7 +33,7 @@ export default async function ClienteDetallePage({
   }));
 
   return (
-    <div className="min-h-screen bg-slate-900 p-6 space-y-6 max-w-4xl">
+    <div className="min-h-screen bg-slate-900 p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link href="/clientes" className="text-slate-400 hover:text-white transition-colors">
