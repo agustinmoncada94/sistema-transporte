@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
@@ -13,6 +13,8 @@ datasource db {
 enum EstadoEnvio {
   INGRESADO
   EN_TRANSITO
+  DEPOSITO
+  RETIRADO_DEPOSITO
   ENTREGADO
   CANCELADO
 }
