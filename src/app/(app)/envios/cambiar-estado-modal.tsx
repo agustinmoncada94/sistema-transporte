@@ -22,20 +22,51 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
   const [abierto, setAbierto] = useState(false);
   const [loading, setLoading] = useState(false);
   const [nota, setNota] = useState("");
+  
+  // Guardamos las coordenadas para posicionar el menú fijo
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const siguientes = TRANSICIONES[estadoActual] ?? [];
 
+  // Calcular la posición del botón al abrir el menú
+  const actualizarPosicion = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      // Lo posicionamos justo debajo del botón, alineado a la derecha del mismo
+      setCoords({
+        top: rect.bottom + window.scrollY + 8, // 8px de margen (mt-2)
+        left: rect.right - 288 + window.scrollX, // 288px es el ancho del modal (w-72)
+      });
+    }
+  };
+
   useEffect(() => {
     if (!abierto) return;
+    
+    actualizarPosicion();
+
     function handleClick(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setAbierto(false);
         setNota("");
       }
     }
+    
+    // Si el usuario hace scroll, recalculamos o cerramos el menú para que no se desfase
+    function handleScroll() {
+      actualizarPosicion();
+    }
+
     document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    window.addEventListener("scroll", handleScroll, true); // Escucha scrolls en contenedores internos también
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      window.removeEventListener("scroll", handleScroll, true);
+    };
   }, [abierto]);
 
   useEffect(() => {
@@ -66,6 +97,7 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
   return (
     <div className="relative inline-flex justify-end" ref={ref}>
       <button
+        ref={buttonRef}
         onClick={(e) => {
           e.stopPropagation();
           if (puedeTransicionar) setAbierto(!abierto);
@@ -82,7 +114,11 @@ export default function CambiarEstadoModal({ envioId, envioNumero, estadoActual 
       </button>
 
       {abierto && (
-        <div className="absolute right-0 top-full mt-2 z-50 w-72 bg-slate-800 rounded-xl border border-slate-700 shadow-xl shadow-black/40 p-4 space-y-3">
+        // MODIFICADO: Cambiamos de 'absolute' a 'fixed' y le inyectamos las coordenadas top/left calculadas en tiempo real
+        <div 
+          style={{ top: `${coords.top}px`, left: `${coords.left}px` }}
+          className="fixed z-[9999] w-72 bg-slate-800 rounded-xl border border-slate-700 shadow-xl shadow-black/40 p-4 space-y-3"
+        >
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Cambiar estado</p>
             <p className="text-xs text-slate-500 font-mono">{envioNumero}</p>
