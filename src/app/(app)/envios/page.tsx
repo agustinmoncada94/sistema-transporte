@@ -134,46 +134,48 @@ export default async function EnviosPage({
                   </tr>
                 </thead>
                 <tbody>
-                  {lista.map((e, idx) => (
-                    <tr
-                      key={e.id}
-                      className={`border-b border-slate-700/40 hover:bg-slate-700/20 transition-colors ${
-                        idx % 2 === 0 ? "bg-slate-800/30" : "bg-slate-800/10"
-                      }`}
-                    >
-                      <td className="px-4 py-3">
-                        <Link href={`/envios/${e.id}`} className="font-mono text-slate-200 hover:text-orange-400 text-xs transition-colors">
-                          {e.numero}
-                        </Link>
-                      </td>
-                      <td className="px-4 py-3 font-mono text-xs text-slate-400">{e.etiqueta}</td>
-                      <td className="px-4 py-3">
-                        {e.cliente ? (
-                          <Link href={`/clientes/${e.cliente.id}`} className="flex items-center gap-2 group">
-                            <span className={`w-2 h-2 rounded-full flex-shrink-0 ${getAvatarColor(e.cliente.razonSocial)}`}></span>
-                            <span className="text-slate-200 group-hover:text-orange-400 transition-colors truncate max-w-36">
-                              {e.cliente.razonSocial}
-                            </span>
-                          </Link>
-                        ) : (
-                          <span className="text-slate-600">—</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-slate-300">{e.origen} → {e.destino}</td>
-                      <td className="px-4 py-3 text-slate-300 max-w-32 truncate">{e.destinatarioNombre}</td>
-                      <td className="px-4 py-3 text-slate-400 text-xs capitalize">{e.tipoMercaderia?.toLowerCase().replace("_", " ")}</td>
-                      <td className="px-4 py-3 text-right text-slate-200 font-medium">{e.precioCliente ? formatPeso(Number(e.precioCliente)) : "-"}</td>
-                      <td className="px-4 py-3 text-slate-400 text-xs">{formatFecha(e.fechaIngreso)}</td>
-                      <td className="px-4 py-3 text-right">
-                        <CambiarEstadoModal
-                          envioId={e.id}
-                          envioNumero={e.numero}
-                          estadoActual={e.estado ?? "ingresado"}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+  {lista.map((e, idx) => (
+    <tr
+      key={e.id}
+      className={`border-b border-slate-700/40 hover:bg-slate-700/20 transition-colors ${
+        idx % 2 === 0 ? "bg-slate-800/30" : "bg-slate-800/10"
+      }`}
+    >
+      <td className="px-4 py-3">
+        <Link href={`/envios/${e.id}`} className="font-mono text-slate-200 hover:text-orange-400 text-xs transition-colors">
+          {e.numero}
+        </Link>
+      </td>
+      <td className="px-4 py-3 font-mono text-xs text-slate-400">{e.etiqueta}</td>
+      <td className="px-4 py-3">
+        {e.cliente ? (
+          <Link href={`/clientes/${e.cliente.id}`} className="flex items-center gap-2 group">
+            <span className={`w-2 h-2 rounded-full flex-shrink-0 ${getAvatarColor(e.cliente.razonSocial)}`}></span>
+            <span className="text-slate-200 group-hover:text-orange-400 transition-colors truncate max-w-36">
+              {e.cliente.razonSocial}
+            </span>
+          </Link>
+        ) : (
+          <span className="text-slate-600">—</span>
+        )}
+      </td>
+      <td className="px-4 py-3 text-slate-300">{e.origen} → {e.destino}</td>
+      <td className="px-4 py-3 text-slate-300 max-w-32 truncate">{e.destinatarioNombre}</td>
+      <td className="px-4 py-3 text-slate-400 text-xs capitalize">{e.tipoMercaderia?.toLowerCase().replace("_", " ")}</td>
+      <td className="px-4 py-3 text-right text-slate-200 font-medium">{e.precioCliente ? formatPeso(Number(e.precioCliente)) : "-"}</td>
+      <td className="px-4 py-3 text-slate-400 text-xs">{formatFecha(e.fechaIngreso)}</td>
+      
+      {/* MODIFICADO: Agregamos clases para permitir que el modal/dropdown flote por encima sin cortarse */}
+      <td className="px-4 py-3 text-right relative overflow-visible">
+        <CambiarEstadoModal
+          envioId={e.id}
+          envioNumero={e.numero}
+          estadoActual={e.estado ?? "ingresado"}
+        />
+      </td>
+    </tr>
+  ))}
+</tbody>
               </table>
             </div>
             <div className="py-3 text-center border-t border-slate-700/40">
