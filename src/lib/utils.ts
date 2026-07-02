@@ -32,18 +32,23 @@ export function generarNumeroEnvio() {
   return `ENV-${yyyy}${mm}${dd}-${rand}`;
 }
 
-export const ESTADOS_LABELS: Record<string, string> = {
+// Ejemplo de lo que debería tener tu lib/utils para mapear los nuevos estados:
+export const ESTADOS_LABELS = {
   ingresado: "Pendiente",
   en_transito: "En tránsito",
+  deposito: "En Depósito",
+  retirado_deposito: "Retirado de Depósito",
   entregado: "Entregado",
   cancelado: "Cancelado",
 };
 
-export const ESTADOS_COLORS: Record<string, string> = {
-  ingresado: "bg-slate-600/40 text-slate-300 border border-slate-500/50",
-  en_transito: "bg-orange-500/20 text-orange-400 border border-orange-500/30",
-  entregado: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-  cancelado: "bg-red-500/20 text-red-400 border border-red-500/30",
+export const ESTADOS_ICONS = {
+  ingresado: "⏳",
+  en_transito: "🚚",
+  deposito: "🏬",
+  retirado_deposito: "📦",
+  entregado: "✅",
+  cancelado: "❌",
 };
 
 export const ESTADOS_ICONS: Record<string, string> = {

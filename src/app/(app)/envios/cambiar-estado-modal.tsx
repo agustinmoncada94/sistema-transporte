@@ -6,7 +6,9 @@ import { ESTADOS_LABELS, ESTADOS_COLORS, ESTADOS_ICONS } from "@/lib/utils";
 
 const TRANSICIONES: Record<string, string[]> = {
   ingresado: ["en_transito", "cancelado"],
-  en_transito: ["entregado", "cancelado"],
+  en_transito: ["deposito", "cancelado"],
+  deposito: ["retirado_deposito", "entregado", "cancelado"],
+  retirado_deposito: ["entregado", "cancelado"],
   entregado: [],
   cancelado: [],
 };
