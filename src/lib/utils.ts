@@ -32,8 +32,8 @@ export function generarNumeroEnvio() {
   return `ENV-${yyyy}${mm}${dd}-${rand}`;
 }
 
-// Ejemplo de lo que debería tener tu lib/utils para mapear los nuevos estados:
-export const ESTADOS_LABELS = {
+// Mapeo unificado de etiquetas
+export const ESTADOS_LABELS: Record<string, string> = {
   ingresado: "Pendiente",
   en_transito: "En tránsito",
   deposito: "En Depósito",
@@ -42,7 +42,8 @@ export const ESTADOS_LABELS = {
   cancelado: "Cancelado",
 };
 
-export const ESTADOS_ICONS = {
+// Mapeo unificado de iconos (Corregido: ahora es único y tiene todos los estados)
+export const ESTADOS_ICONS: Record<string, string> = {
   ingresado: "⏳",
   en_transito: "🚚",
   deposito: "🏬",
@@ -51,11 +52,14 @@ export const ESTADOS_ICONS = {
   cancelado: "❌",
 };
 
-export const ESTADOS_ICONS: Record<string, string> = {
-  ingresado: "",
-  en_transito: "\uD83D\uDE9A",
-  entregado: "\u2713",
-  cancelado: "\u2715",
+// Agregamos los estilos de colores para que no rompa la tabla al renderizar los nuevos estados
+export const ESTADOS_COLORS: Record<string, string> = {
+  ingresado: "bg-slate-500/20 text-slate-400 border border-slate-500/20",
+  en_transito: "bg-orange-500/20 text-orange-400 border border-orange-500/30",
+  deposito: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+  retirado_deposito: "bg-purple-500/20 text-purple-400 border border-purple-500/30",
+  entregado: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+  cancelado: "bg-red-500/20 text-red-400 border border-red-500/30",
 };
 
 export const TIPO_MERCADERIA_LABELS: Record<string, string> = {
