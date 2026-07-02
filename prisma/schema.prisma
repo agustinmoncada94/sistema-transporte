@@ -59,30 +59,30 @@ model Ruta {
 }
 
 model Envio {
-  id                    Int              @id @default(autoincrement())
-  numero                String           @unique
+  id                    Int             @id @default(autoincrement())
+  numero                String          @unique
   etiqueta              String
-  clienteId             Int?             @map("cliente_id")
-  cliente               Cliente?         @relation(fields: [clienteId], references: [id], onDelete: SetNull)
-  destinatarioNombre    String           @map("destinatario_nombre")
-  destinatarioDireccion String?          @map("destinatario_direccion")
-  destinatarioTelefono  String?          @map("destinatario_telefono")
-  rutaId                Int?             @map("ruta_id")
-  ruta                  Ruta?            @relation(fields: [rutaId], references: [id], onDelete: SetNull)
+  clienteId             Int?            @map("cliente_id")
+  cliente               Cliente?        @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  destinatarioNombre    String          @map("destinatario_nombre")
+  destinatarioDireccion String?         @map("destinatario_direccion")
+  destinatarioTelefono  String?         @map("destinatario_telefono")
+  rutaId                Int?            @map("ruta_id")
+  ruta                  Ruta?           @relation(fields: [rutaId], references: [id], onDelete: SetNull)
   origen                String
   destino               String
-  tipoMercaderia        TipoMercaderia   @default(GENERAL) @map("tipo_mercaderia")
-  pesoKg                Float?           @map("peso_kg")
-  bultos                Int              @default(1)
-  precioCliente         Float?           @map("precio_cliente")
-  costoEstimado         Float?           @map("costo_estimado")
-  kmRuta                Int?             @map("km_ruta")
-  estado                EstadoEnvio      @default(INGRESADO)
+  tipoMercaderia        TipoMercaderia  @default(GENERAL) @map("tipo_mercaderia")
+  pesoKg                Float?          @map("peso_kg")
+  bultos                Int             @default(1)
+  precioCliente         Float?          @map("precio_cliente")
+  costoEstimado         Float?          @map("costo_estimado")
+  kmRuta                Int?            @map("km_ruta")
+  estado                EstadoEnvio     @default(INGRESADO)
   observaciones         String?
-  fechaIngreso          DateTime         @default(now()) @map("fecha_ingreso")
-  fechaEntrega          DateTime?        @map("fecha_entrega")
-  creadoEn              DateTime         @default(now()) @map("creado_en")
-  actualizadoEn         DateTime         @updatedAt @map("actualizado_en")
+  fechaIngreso          DateTime        @default(now()) @map("fecha_ingreso")
+  fechaEntrega          DateTime?       @map("fecha_entrega")
+  creadoEn              DateTime        @default(now()) @map("creado_en")
+  actualizadoEn         DateTime        @updatedAt @map("actualizado_en")
   historial             HistorialEstado[]
 
   @@map("envios")
